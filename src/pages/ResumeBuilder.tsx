@@ -1,6 +1,7 @@
 
 import React, { useState, useRef } from 'react';
 import { useResumeContext } from '@/context/ResumeContext';
+import { useAuth } from '@/context/AuthContext';
 import PersonalInfoForm from '@/components/resume/PersonalInfoForm';
 import SummaryForm from '@/components/resume/SummaryForm';
 import ExperienceForm from '@/components/resume/ExperienceForm';
@@ -10,13 +11,16 @@ import ResumePreview from '@/components/resume/ResumePreview';
 import TemplateSelector from '@/components/resume/TemplateSelector';
 import LanguageSelector from '@/components/resume/LanguageSelector';
 import ResumeActions from '@/components/resume/ResumeActions';
+import SaveStatus from '@/components/resume/SaveStatus';
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowRight, ArrowLeft, User, FileText, Briefcase, GraduationCap, Wrench, LayoutTemplate, Settings } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const ResumeBuilder: React.FC = () => {
   const [activeTab, setActiveTab] = useState("personal");
   const previewRef = useRef<HTMLDivElement>(null);
+  const { user } = useAuth();
 
   const tabs = [
     { id: "personal", label: "Personal Info", icon: <User className="h-4 w-4" /> },
@@ -50,7 +54,19 @@ const ResumeBuilder: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-6 text-eliteblue dark:text-eliteblue-light">Resume Builder</h1>
+      <div className="flex justify-between items-center mb-6">
+        <h1 className="text-3xl font-bold text-eliteblue dark:text-eliteblue-light">Resume Builder</h1>
+        
+        <div className="flex items-center gap-3">
+          <SaveStatus />
+          
+          {!user && (
+            <Button variant="secondary" size="sm" asChild>
+              <Link to="/auth">Sign in to save</Link>
+            </Button>
+          )}
+        </div>
+      </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="space-y-6">

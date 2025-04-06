@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -15,6 +14,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { generateExperienceDescription } from '@/lib/openai';
 
 interface ExperienceFormProps {
   className?: string;
@@ -37,27 +37,42 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({ className }) => {
     });
   };
 
-  const handleGenerateDescription = (id: string) => {
+  const handleGenerateDescription = async (id: string) => {
     setIsGenerating(id);
     
     // Find the experience item
     const experience = resumeData.experience.find(item => item.id === id);
     
-    // Simulate API call for AI generation
-    setTimeout(() => {
-      if (experience) {
-        const generatedDescription = 
-          `As a ${experience.position} at ${experience.company}, I led cross-functional teams to deliver high-impact projects. Improved operational efficiency by 20% through process optimization and innovative solutions. Collaborated with stakeholders to align deliverables with business objectives and ensure customer satisfaction.`;
+    try {
+      if (experience?.position && experience?.company) {
+        const generatedDescription = await generateExperienceDescription(
+          experience.position,
+          experience.company
+        );
         
         updateExperience(id, { description: generatedDescription });
+        
+        toast({
+          title: "Description Generated",
+          description: "AI has created a professional description based on your job information.",
+        });
+      } else {
+        toast({
+          title: "Missing Information",
+          description: "Please add a position title and company name before generating a description.",
+          variant: "destructive",
+        });
       }
-      
-      setIsGenerating(null);
+    } catch (error) {
+      console.error('Error generating description:', error);
       toast({
-        title: "Description Generated",
-        description: "AI has created a professional description based on your job information.",
+        title: "Generation Failed",
+        description: "There was an error generating your description. Please try again.",
+        variant: "destructive",
       });
-    }, 1500);
+    } finally {
+      setIsGenerating(null);
+    }
   };
 
   return (
@@ -177,7 +192,7 @@ const ExperienceForm: React.FC<ExperienceFormProps> = ({ className }) => {
                             variant="outline"
                             size="sm"
                             onClick={() => handleGenerateDescription(exp.id)}
-                            disabled={isGenerating === exp.id}
+                            disabled={isGenerating === exp.id || !exp.company || !exp.position}
                             className="flex items-center gap-1"
                           >
                             <Sparkles className="h-4 w-4" />

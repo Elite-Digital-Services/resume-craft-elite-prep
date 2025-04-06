@@ -1,7 +1,6 @@
 
 import React, { useState } from 'react';
 import { Card, CardContent } from "@/components/ui/card";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { useResumeContext } from '@/context/ResumeContext';
@@ -13,6 +12,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { useToast } from "@/components/ui/use-toast";
+import { generateResumeSummary } from '@/lib/openai';
 
 interface SummaryFormProps {
   className?: string;
@@ -23,23 +23,39 @@ const SummaryForm: React.FC<SummaryFormProps> = ({ className }) => {
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
-  const handleAiGenerate = () => {
+  const handleAiGenerate = async () => {
     setIsGenerating(true);
     
-    // Simulate API call for AI generation
-    setTimeout(() => {
-      const jobTitle = resumeData.personalInfo.title || "professional";
-      const generatedSummary = 
-        `Results-driven ${jobTitle} with a proven track record of success in developing innovative solutions. Skilled in collaborating with cross-functional teams to drive project success and deliver high-quality outcomes. Adept at problem-solving and continuously learning new technologies to stay at the forefront of industry developments.`;
+    try {
+      // Get experience to provide context to the AI
+      let experienceContext = '';
+      if (resumeData.experience.length > 0) {
+        const latestExperience = resumeData.experience[0];
+        experienceContext = `Recent role: ${latestExperience.position} at ${latestExperience.company}. ${latestExperience.description}`;
+      }
+      
+      const generatedSummary = await generateResumeSummary({
+        fullName: resumeData.personalInfo.fullName || 'Professional',
+        title: resumeData.personalInfo.title || 'professional',
+        experience: experienceContext
+      });
       
       updateSummary(generatedSummary);
-      setIsGenerating(false);
       
       toast({
         title: "Summary Generated",
         description: "AI has created a professional summary based on your information.",
       });
-    }, 1500);
+    } catch (error) {
+      console.error('Error generating summary:', error);
+      toast({
+        title: "Generation Failed",
+        description: "There was an error generating your summary. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
   };
 
   return (

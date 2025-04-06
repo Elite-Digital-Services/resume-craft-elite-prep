@@ -49,6 +49,7 @@ export interface ResumeContextType {
   resumeData: ResumeData;
   template: TemplateType;
   language: LanguageType;
+  saveStatus?: 'saved' | 'saving' | 'error';
   updatePersonalInfo: (info: Partial<PersonalInfo>) => void;
   updateSummary: (summary: string) => void;
   addExperience: (experience: Omit<ExperienceItem, 'id'>) => void;
