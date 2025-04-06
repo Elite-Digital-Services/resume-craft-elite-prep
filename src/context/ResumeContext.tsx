@@ -1,6 +1,5 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import { 
   ResumeData, 
   PersonalInfo, 
@@ -10,6 +9,9 @@ import {
   TemplateType,
   LanguageType
 } from '@/types/resume';
+
+// Simple ID generation function to replace uuid
+const generateId = () => `id_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
 
 // Default initial resume data
 const initialResumeData: ResumeData = {
@@ -70,7 +72,7 @@ export const ResumeProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const addExperience = (experience: Omit<ExperienceItem, 'id'>) => {
-    const newExperience = { ...experience, id: uuidv4() };
+    const newExperience = { ...experience, id: generateId() };
     setResumeData((prev) => ({
       ...prev,
       experience: [newExperience, ...prev.experience],
@@ -94,7 +96,7 @@ export const ResumeProvider: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const addEducation = (education: Omit<EducationItem, 'id'>) => {
-    const newEducation = { ...education, id: uuidv4() };
+    const newEducation = { ...education, id: generateId() };
     setResumeData((prev) => ({
       ...prev,
       education: [newEducation, ...prev.education],
