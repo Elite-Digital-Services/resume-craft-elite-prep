@@ -1,3 +1,4 @@
+
 import type { Config } from "tailwindcss";
 
 export default {
@@ -52,6 +53,18 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// Custom Elite Test Prep colors
+				eliteblue: {
+					DEFAULT: '#1a365d',
+					light: '#4299e1',
+				},
+				elitegray: {
+					DEFAULT: '#718096',
+					light: '#f7fafc',
+				},
+				elitegold: {
+					DEFAULT: '#ecc94b',
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -89,6 +102,10 @@ export default {
 			animation: {
 				'accordion-down': 'accordion-down 0.2s ease-out',
 				'accordion-up': 'accordion-up 0.2s ease-out'
+			},
+			fontFamily: {
+				'sans': ['Inter', 'sans-serif'],
+				'heading': ['Roboto', 'sans-serif'],
 			}
 		}
 	},
