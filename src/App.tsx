@@ -19,6 +19,9 @@ import Auth from "./pages/Auth";
 
 const queryClient = new QueryClient();
 
+// Get base URL from Vite config
+const baseUrl = import.meta.env.BASE_URL || '/';
+
 const App = () => {
   const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
     // Check local storage or user preference
@@ -47,7 +50,7 @@ const App = () => {
           <TooltipProvider>
             <Toaster />
             <Sonner />
-            <BrowserRouter>
+            <BrowserRouter basename={baseUrl}>
               <div className="flex flex-col min-h-screen">
                 <Navbar toggleTheme={toggleTheme} isDarkMode={isDarkMode} />
                 <main className="flex-1">

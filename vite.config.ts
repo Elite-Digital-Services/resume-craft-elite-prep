@@ -20,5 +20,5 @@ export default defineConfig(({ mode }) => ({
       "@": path.resolve(__dirname, "./src"),
     },
   },
-  base: '/', // Set base to root for custom domain
+  base: '/ai-resume-builder/', // Set base to match the subdirectory on your website
 }));

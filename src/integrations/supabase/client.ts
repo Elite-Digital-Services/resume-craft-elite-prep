@@ -17,6 +17,9 @@ export const supabase = createClient<Database>(
       storage: localStorage,
       persistSession: true,
       autoRefreshToken: true,
+      // Set the correct redirect URL for authentication
+      flowType: 'pkce',
+      detectSessionInUrl: true,
     }
   }
 );
