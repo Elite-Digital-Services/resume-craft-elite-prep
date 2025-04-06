@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Menu, X, Moon, Sun } from "lucide-react";
 import { useToast } from "@/components/ui/use-toast";
+import UserMenu from './auth/UserMenu';
+import { useAuth } from '@/context/AuthContext';
 
 interface NavbarProps {
   toggleTheme: () => void;
@@ -12,14 +14,7 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ toggleTheme, isDarkMode }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { toast } = useToast();
-
-  const handleAuthClick = () => {
-    toast({
-      title: "Authentication Coming Soon",
-      description: "Sign in functionality will be available in the next update!",
-    });
-  };
+  const { user } = useAuth();
 
   return (
     <nav className="bg-white dark:bg-gray-900 shadow-sm border-b">
@@ -44,8 +39,18 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, isDarkMode }) => {
             <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full">
               {isDarkMode ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
             </Button>
-            <Button onClick={handleAuthClick} variant="outline">Sign in</Button>
-            <Button onClick={handleAuthClick}>Sign up</Button>
+            {user ? (
+              <UserMenu />
+            ) : (
+              <>
+                <Button asChild variant="outline">
+                  <Link to="/auth">Sign in</Link>
+                </Button>
+                <Button asChild>
+                  <Link to="/auth?tab=signup">Sign up</Link>
+                </Button>
+              </>
+            )}
           </div>
           <div className="flex items-center sm:hidden">
             <Button variant="ghost" size="icon" onClick={toggleTheme} className="rounded-full mr-2">
@@ -74,8 +79,18 @@ const Navbar: React.FC<NavbarProps> = ({ toggleTheme, isDarkMode }) => {
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">
             <div className="flex items-center px-4 space-x-2">
-              <Button onClick={handleAuthClick} className="w-full" variant="outline">Sign in</Button>
-              <Button onClick={handleAuthClick} className="w-full">Sign up</Button>
+              {user ? (
+                <UserMenu />
+              ) : (
+                <>
+                  <Button asChild className="w-full" variant="outline">
+                    <Link to="/auth">Sign in</Link>
+                  </Button>
+                  <Button asChild className="w-full">
+                    <Link to="/auth?tab=signup">Sign up</Link>
+                  </Button>
+                </>
+              )}
             </div>
           </div>
         </div>

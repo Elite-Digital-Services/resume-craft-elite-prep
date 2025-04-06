@@ -1,11 +1,23 @@
 
-import React from 'react';
-import { Navigate } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Navigate, useLocation } from 'react-router-dom';
 import AuthForm from '@/components/auth/AuthForm';
 import { useAuth } from '@/context/AuthContext';
 
 const Auth: React.FC = () => {
   const { user, loading } = useAuth();
+  const location = useLocation();
+  const [activeTab, setActiveTab] = useState<'login' | 'signup'>('login');
+
+  useEffect(() => {
+    // Set active tab based on URL query parameter
+    const params = new URLSearchParams(location.search);
+    if (params.get('tab') === 'signup') {
+      setActiveTab('signup');
+    } else {
+      setActiveTab('login');
+    }
+  }, [location.search]);
 
   // If already logged in, redirect to resume builder
   if (user && !loading) {
@@ -28,7 +40,7 @@ const Auth: React.FC = () => {
         {loading ? (
           <div className="text-center">Loading...</div>
         ) : (
-          <AuthForm />
+          <AuthForm initialTab={activeTab} />
         )}
       </div>
     </div>
